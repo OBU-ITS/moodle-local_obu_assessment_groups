@@ -49,7 +49,11 @@ class local_obu_assessment_groups_external extends external_api {
             array(
                 'result' => new external_value(PARAM_INT, 'Result of the sync group members. 2 = success with issues, 1 = success, 0 = failure, -1 = course not found, -2 = group not found'),
                 'issuemembers' => new external_multiple_structure(
-                    'userid' => new external_value(PARAM_INT, 'user id'),
+                    new external_single_structure(
+                        array(
+                            'userid' => new external_value(PARAM_INT, 'user id'),
+                        )
+                    )
                 )
             )
         );
