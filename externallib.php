@@ -166,28 +166,23 @@ class local_obu_assessment_groups_external extends external_api {
     public static function create_group_parameters() {
         return new external_function_parameters(
             array(
-                'members'=> new external_multiple_structure(
-                    new external_single_structure(
-                        array(
-                            'courseid' => new external_value(PARAM_INT, 'course id'),
-                        )
-                    )
-                )
+                'courseidnumber' => new external_value(PARAM_TEXT, 'Course ID number', true),
+                'groupidnumber' => new external_value(PARAM_TEXT, 'Group ID number', true),
+                'groupname' => new external_value(PARAM_TEXT, 'Group Name', true),
             )
         );
     }
 
     public static function create_group_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'courseid' => new external_value(PARAM_INT, 'course record id'),
-                )
+        return new external_single_structure(
+            array(
+                'result' => new external_value(PARAM_INT, 'Result of the group creation. 1 = success, 0 = failure, -1 = course not found'),
+                'groupname' => new external_value(PARAM_TEXT, 'The name of the created group, empty if creation failed', VALUE_OPTIONAL),
             )
         );
     }
 
-    public static function create_group($courseId) {
+    public static function create_group($courseidnumber, $groupidnumber, $groupname) {
         global $DB;
 
         // Context validation
@@ -196,17 +191,73 @@ class local_obu_assessment_groups_external extends external_api {
         // Parameter validation
         $params = self::validate_parameters(
             self::add_session_parameters(), array(
-                'courseid' => $courseId,
+                'courseidnumber' => $courseidnumber,
+                'groupidnumber' => $groupidnumber,
+                'groupname' => $groupname,
             )
         );
 
-        if (!($DB->get_record('course', array('id' => $params['courseid'])))) {
+        // Check if the course with the provided courseidnumber exists
+        if (!($course = $DB->get_record('course', array('idnumber' => $params['courseidnumber'])))) {
+            return array('result' => -1, 'groupname' => ''); // Course not found, return empty groupname
+        }
+
+        if ($group = local_obu_assessment_groups_create_group($course, $groupidnumber, $groupname)) {
+            return array('result' => 1, 'groupname' => $group->name); // Success, return groupname
+        }
+
+        return array('result' => 0, 'groupname' => ''); // Failure, return empty groupname
+    }
+
+    public static function delete_group_parameters() {
+        return new external_function_parameters(
+            array(
+                'courseidnumber' => new external_value(PARAM_TEXT, 'Course ID number', true),
+                'groupidnumber' => new external_value(PARAM_TEXT, 'Group ID number', true),
+            )
+        );
+    }
+
+    public static function delete_group_returns() {
+        return new external_single_structure(
+            array(
+                'result' => new external_value(PARAM_INT, 'Result of the group creation. 1 = success, 0 = failure, -1 = course not found, -2 = group not found, -3 = group not in course'),
+            )
+        );
+    }
+
+    public static function delete_group($courseidnumber, $groupidnumber) {
+        global $DB;
+
+        // Context validation
+        self::validate_context(context_system::instance());
+
+        // Parameter validation
+        $params = self::validate_parameters(
+            self::add_session_parameters(), array(
+                'courseidnumber' => $courseidnumber,
+                'groupidnumber' => $groupidnumber,
+            )
+        );
+
+        // Check if the course with the provided courseidnumber exists
+        if (!($course = $DB->get_record('course', array('idnumber' => $params['courseidnumber'])))) {
             return array('result' => -1);
         }
 
-        if(local_obu_group_manager_create_system_group($courseId)){
-            return array('result' => 1);
+        // Check if the group with the provided groupidnumber exists
+        if (!($group = $DB->get_record('groups', array('idnumber' => $params['groupidnumber'])))) {
+            return array('result' => -2);
+        }
+
+        // Check if the group exists in the given course
+        if (!($DB->record_exists('groups', array('id' => $group->id, 'courseid' => $course->id)))) {
+            return array('result' => -3);
         };
+
+        if (local_obu_assessment_groups_delete_group($group)) {
+            return array('result' => 1);
+        }
 
         return array('result' => 0);
     }

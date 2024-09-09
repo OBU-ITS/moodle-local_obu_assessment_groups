@@ -22,14 +22,22 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once($CFG->dirroot."/grouplib.php");
+
 function local_obu_assessment_groups_sync_group_members() {
 
 }
 
-function local_obu_assessment_groups_create_group() {
+function local_obu_assessment_groups_create_group($course, $groupidnumber, $groupname) {
 
+    return local_obu_group_manager_create_system_group($course, $groupname, $groupidnumber);
 }
 
-function local_obu_assessment_groups_delete_group() {
+function local_obu_assessment_groups_delete_group($group) {
+    global $DB;
 
+    $DB->delete_records('groups', array('id' => $group->id));
+    $DB->delete_records('groups_members', array('groupid' => $group->id));
+
+    return true;
 }
