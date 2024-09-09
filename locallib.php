@@ -36,11 +36,12 @@ function local_obu_assessment_groups_sync_group_members($group, $members) {
     }, $current_members);
 
     $member_userids = array_map(function($user) {
-        return $user->userid;
+        return $user['userid'];
     }, $members);
 
     $issue_members = array();
     $members_to_add = array_diff($member_userids, $current_member_userids);
+
     foreach($members_to_add as $userid) {
         if(!local_obu_assessment_groups_sync_group_member_add($group, $userid)) {
             array_push($issue_members, $userid);

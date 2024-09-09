@@ -55,7 +55,7 @@ class local_obu_assessment_groups_external extends external_api {
                 'issuemembers' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'userid' => new external_value(PARAM_INT, 'user id'),
+                            'userid' => new external_value(PARAM_INT, 'user id', false),
                         )
                     )
                 )
@@ -67,7 +67,7 @@ class local_obu_assessment_groups_external extends external_api {
     {
         global $CFG, $DB;
 
-        require_once("$CFG->dirroot/grouplib.php");
+        require_once("$CFG->libdir/grouplib.php");
 
         // Context validation
         self::validate_context(context_system::instance());
@@ -136,6 +136,7 @@ class local_obu_assessment_groups_external extends external_api {
 
         return array('result' => 0, 'groupname' => ''); // Failure, return empty groupname
     }
+
 
     public static function delete_group_parameters() {
         return new external_function_parameters(
