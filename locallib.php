@@ -23,11 +23,12 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+global $CFG, $DB;
+require_once("$CFG->libdir/grouplib.php");
+require_once("$CFG->dirroot/local/obu_assessment_extensions/lib.php");
+require_once("$CFG->dirroot/local/obu_group_manager/lib.php");
 
 function local_obu_assessment_groups_sync_group_members($group, $members) {
-    global $CFG;
-
-    require_once("$CFG->dirroot/grouplib.php");
 
     $current_members = groups_get_members($group->id);
     $current_member_userids = array_map(function($user) {
@@ -58,10 +59,6 @@ function local_obu_assessment_groups_sync_group_members($group, $members) {
 }
 
 function local_obu_assessment_groups_sync_group_member_add($group, $userid) {
-    global $CFG, $DB;
-
-    require_once("$CFG->dirroot/grouplib.php");
-    require_once("$CFG->dirroot/local/obu_assessment_extensions/lib.php");
 
     try {
         $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
@@ -78,25 +75,16 @@ function local_obu_assessment_groups_sync_group_member_add($group, $userid) {
 }
 
 function local_obu_assessment_groups_sync_group_member_delete($group, $userid) {
-    global $CFG;
-
-    require_once("$CFG->dirroot/grouplib.php");
 
     groups_remove_member($group, $userid);
 }
 
 function local_obu_assessment_groups_create_group($course, $groupidnumber, $groupname) {
-    global $CFG;
-
-    require_once("$CFG->dirroot/local/obu_group_manager/lib.php");
 
     return local_obu_group_manager_create_system_group($course, $groupname, $groupidnumber);
 }
 
 function local_obu_assessment_groups_delete_group($group) {
-    global $CFG, $DB;
-
-    require_once("$CFG->dirroot/grouplib.php");
 
     groups_delete_group($group);
 
