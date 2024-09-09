@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 function local_obu_assessment_groups_sync_group_members($group, $members) {
     global $CFG;
 
@@ -65,12 +67,12 @@ private function local_obu_assessment_groups_sync_group_member_add($group, $user
         $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
 
         groups_add_member($group, $user);
-
-        local_obu_assess_ex_recalculate_due_dates_for_user($user, $group);
     }
     catch (Exception $e) {
         return false;
     }
+
+    local_obu_assess_ex_recalculate_due_dates_for_user($user, $group);
 
     return true;
 }
