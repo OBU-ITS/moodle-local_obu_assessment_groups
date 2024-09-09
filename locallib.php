@@ -57,7 +57,7 @@ function local_obu_assessment_groups_sync_group_members($group, $members) {
     );
 }
 
-private function local_obu_assessment_groups_sync_group_member_add($group, $userid) {
+function local_obu_assessment_groups_sync_group_member_add($group, $userid) {
     global $CFG, $DB;
 
     require_once("$CFG->dirroot/grouplib.php");
@@ -77,7 +77,7 @@ private function local_obu_assessment_groups_sync_group_member_add($group, $user
     return true;
 }
 
-private function local_obu_assessment_groups_sync_group_member_delete($group, $userid) {
+function local_obu_assessment_groups_sync_group_member_delete($group, $userid) {
     global $CFG;
 
     require_once("$CFG->dirroot/grouplib.php");
