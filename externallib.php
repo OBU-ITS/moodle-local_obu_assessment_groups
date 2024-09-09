@@ -75,7 +75,6 @@ class local_obu_assessment_groups_external extends external_api {
 //        return array('result' => -9);
 //    }
 
-
 //    public static function get_group_members_parameters() {
 //        return new external_function_parameters(
 //            array(
@@ -117,7 +116,6 @@ class local_obu_assessment_groups_external extends external_api {
 //
 //        return array('result' => -9);
 //    }
-
 
 //    public static function delete_group_members_parameters() {
 //        return new external_function_parameters(
@@ -162,6 +160,43 @@ class local_obu_assessment_groups_external extends external_api {
 //        return array('result' => 1);
 //    }
 
+    public static function sync_group_members_parameters() {
+        return new external_function_parameters(
+            array(
+                'groupidnumber' => new external_value(PARAM_TEXT, 'group record id number'),
+                'members' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'userid' => new external_value(PARAM_TEXT, 'username'),
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    public static function sync_group_members_returns() {
+        return new external_function_parameters(
+            array(
+                'result' => new external_value(PARAM_INT, 'Response code'),
+            )
+        );
+    }
+
+    public static function sync_group_members($members)
+    {
+        global $CFG, $DB;
+        require_once("$CFG->dirroot/group/lib.php");
+
+        $params = self::validate_parameters(self::sync_group_members_parameters(), array('members'=>$members));
+
+        $transaction = $DB->start_delegated_transaction();
+
+        
+
+        $transaction->allow_commit();
+    }
+
 
     public static function create_group_parameters() {
         return new external_function_parameters(
@@ -169,7 +204,7 @@ class local_obu_assessment_groups_external extends external_api {
                 'members'=> new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'courseid' => new external_value(PARAM_INT, 'course id'),
+                            'username' => new external_value(PARAM_TEXT, 'Username'),
                         )
                     )
                 )
