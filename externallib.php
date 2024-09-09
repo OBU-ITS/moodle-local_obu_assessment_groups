@@ -26,8 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->libdir . "/externallib.php");
+require_once($CFG->libdir.'/externallib.php');
 require_once($CFG->dirroot.'/group/externallib.php');
+require_once($CFG->dirroot.'/local/obu_assessment_groups/locallib.php');
 
 class local_obu_assessment_groups_external extends external_api {
 
