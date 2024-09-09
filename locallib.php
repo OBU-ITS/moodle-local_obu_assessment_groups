@@ -23,7 +23,7 @@
  */
 
 function local_obu_assessment_groups_sync_group_members($group, $members) {
-    global $CFG, $DB;
+    global $CFG;
 
     require_once("$CFG->dirroot/grouplib.php");
 
