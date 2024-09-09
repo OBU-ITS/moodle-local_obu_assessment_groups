@@ -80,10 +80,11 @@ function local_obu_assessment_groups_create_group($course, $groupidnumber, $grou
 }
 
 function local_obu_assessment_groups_delete_group($group) {
-    global $DB;
+    global $CFG, $DB;
 
-    $DB->delete_records('groups', array('id' => $group->id));
-    $DB->delete_records('groups_members', array('groupid' => $group->id));
+    require_once("$CFG->dirroot/grouplib.php");
+
+    groups_delete_group($group);
 
     return true;
 }
