@@ -28,139 +28,139 @@ require_once($CFG->dirroot.'/group/externallib.php');
 
 class local_obu_assessment_groups_external extends external_api {
 
-    public static function get_course_groups_parameters() {
-        return new external_function_parameters(
-            array(
-                'groupids' => new external_multiple_structure(new external_value(PARAM_INT, 'Group ID')
-                    ,'List of group ids. A group id is an integer.'),
-            )
-        );
-    }
-
-    public static function get_course_groups_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'group record id'),
-                    'courseid' => new external_value(PARAM_INT, 'id of course'),
-                    'name' => new external_value(PARAM_TEXT, 'group name'),
-                    'description' => new external_value(PARAM_RAW, 'group description text'),
-                    'descriptionformat' => new external_format_value('description'),
-                    'enrolmentkey' => new external_value(PARAM_RAW, 'group enrol secret phrase'),
-                    'idnumber' => new external_value(PARAM_RAW, 'id number')
-                )
-            )
-        );
-    }
-
-    public static function get_course_groups($groupIds) {
-        // Context validation
-        self::validate_context(context_system::instance());
-
-        // Parameter validation
-        self::validate_parameters(
-            self::add_session_parameters(), array(
-                'groupids' => $groupIds,
-            )
-        );
-
-        if (count($groupIds) == 0) {
-            return array('result' => -1);
-        }
-
-        if ($courseGroups = core_group_external::get_groups($groupIds)) {
-            return $courseGroups;
-        }
-
-        return array('result' => -9);
-    }
-
-
-    public static function get_group_members_parameters() {
-        return new external_function_parameters(
-            array(
-                'groupids' => new external_multiple_structure(new external_value(PARAM_INT, 'Group ID')
-                    ,'List of group ids. A group id is an integer.'),
-            )
-        );
-    }
-
-    public static function get_group_members_returns() {
-        return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'groupid' => new external_value(PARAM_INT, 'group record id'),
-                    'userids' => new external_multiple_structure(new external_value(PARAM_INT, 'user id')),
-                )
-            )
-        );
-    }
-
-    public static function get_group_members($groupIds) {
-        // Context validation
-        self::validate_context(context_system::instance());
-
-        // Parameter validation
-        self::validate_parameters(
-            self::add_session_parameters(), array(
-                'groupids' => $groupIds,
-            )
-        );
-
-        if (count($groupIds) == 0) {
-            return array('result' => -1);
-        }
-
-        if ($groupMembers = core_group_external::get_group_members($groupIds)) {
-            return $groupMembers;
-        }
-
-        return array('result' => -9);
-    }
+//    public static function get_course_groups_parameters() {
+//        return new external_function_parameters(
+//            array(
+//                'groupids' => new external_multiple_structure(new external_value(PARAM_INT, 'Group ID')
+//                    ,'List of group ids. A group id is an integer.'),
+//            )
+//        );
+//    }
+//
+//    public static function get_course_groups_returns() {
+//        return new external_multiple_structure(
+//            new external_single_structure(
+//                array(
+//                    'id' => new external_value(PARAM_INT, 'group record id'),
+//                    'courseid' => new external_value(PARAM_INT, 'id of course'),
+//                    'name' => new external_value(PARAM_TEXT, 'group name'),
+//                    'description' => new external_value(PARAM_RAW, 'group description text'),
+//                    'descriptionformat' => new external_format_value('description'),
+//                    'enrolmentkey' => new external_value(PARAM_RAW, 'group enrol secret phrase'),
+//                    'idnumber' => new external_value(PARAM_RAW, 'id number')
+//                )
+//            )
+//        );
+//    }
+//
+//    public static function get_course_groups($groupIds) {
+//        // Context validation
+//        self::validate_context(context_system::instance());
+//
+//        // Parameter validation
+//        self::validate_parameters(
+//            self::add_session_parameters(), array(
+//                'groupids' => $groupIds,
+//            )
+//        );
+//
+//        if (count($groupIds) == 0) {
+//            return array('result' => -1);
+//        }
+//
+//        if ($courseGroups = core_group_external::get_groups($groupIds)) {
+//            return $courseGroups;
+//        }
+//
+//        return array('result' => -9);
+//    }
 
 
-    public static function delete_group_members_parameters() {
-        return new external_function_parameters(
-            array(
-                'members'=> new external_multiple_structure(
-                    new external_single_structure(
-                        array(
-                            'groupid' => new external_value(PARAM_INT, 'group record id'),
-                            'userid' => new external_value(PARAM_INT, 'user id'),
-                        )
-                    )
-                )
-            )
-        );
-    }
+//    public static function get_group_members_parameters() {
+//        return new external_function_parameters(
+//            array(
+//                'groupids' => new external_multiple_structure(new external_value(PARAM_INT, 'Group ID')
+//                    ,'List of group ids. A group id is an integer.'),
+//            )
+//        );
+//    }
+//
+//    public static function get_group_members_returns() {
+//        return new external_multiple_structure(
+//            new external_single_structure(
+//                array(
+//                    'groupid' => new external_value(PARAM_INT, 'group record id'),
+//                    'userids' => new external_multiple_structure(new external_value(PARAM_INT, 'user id')),
+//                )
+//            )
+//        );
+//    }
+//
+//    public static function get_group_members($groupIds) {
+//        // Context validation
+//        self::validate_context(context_system::instance());
+//
+//        // Parameter validation
+//        self::validate_parameters(
+//            self::add_session_parameters(), array(
+//                'groupids' => $groupIds,
+//            )
+//        );
+//
+//        if (count($groupIds) == 0) {
+//            return array('result' => -1);
+//        }
+//
+//        if ($groupMembers = core_group_external::get_group_members($groupIds)) {
+//            return $groupMembers;
+//        }
+//
+//        return array('result' => -9);
+//    }
 
-    public static function delete_group_members_returns() {
-        return new external_single_structure(
-            array(
-                'result' => new external_value(PARAM_INT, 'Result')
-            )
-        );
-    }
 
-    public static function delete_group_members($members) {
-        global $DB;
-
-        // Context validation
-        self::validate_context(context_system::instance());
-
-        //TODO:: Param validation
-
-        $params = self::validate_parameters(self::delete_group_members_parameters(), array('members'=>$members));
-
-        foreach ($params['members'] as $member) {
-            $groupid = $member['groupid'];
-            $userid = $member['userid'];
-
-            groups_remove_member($groupid, $userid);
-        }
-
-        return array('result' => 1);
-    }
+//    public static function delete_group_members_parameters() {
+//        return new external_function_parameters(
+//            array(
+//                'members'=> new external_multiple_structure(
+//                    new external_single_structure(
+//                        array(
+//                            'groupid' => new external_value(PARAM_INT, 'group record id'),
+//                            'userid' => new external_value(PARAM_INT, 'user id'),
+//                        )
+//                    )
+//                )
+//            )
+//        );
+//    }
+//
+//    public static function delete_group_members_returns() {
+//        return new external_single_structure(
+//            array(
+//                'result' => new external_value(PARAM_INT, 'Result')
+//            )
+//        );
+//    }
+//
+//    public static function delete_group_members($members) {
+//        global $DB;
+//
+//        // Context validation
+//        self::validate_context(context_system::instance());
+//
+//        //TODO:: Param validation
+//
+//        $params = self::validate_parameters(self::delete_group_members_parameters(), array('members'=>$members));
+//
+//        foreach ($params['members'] as $member) {
+//            $groupid = $member['groupid'];
+//            $userid = $member['userid'];
+//
+//            groups_remove_member($groupid, $userid);
+//        }
+//
+//        return array('result' => 1);
+//    }
 
 
     public static function create_group_parameters() {
