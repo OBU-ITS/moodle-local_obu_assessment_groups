@@ -68,6 +68,10 @@ class local_obu_assessment_groups_external extends external_api {
 
         require_once("$CFG->dirroot/grouplib.php");
 
+        // Context validation
+        self::validate_context(context_system::instance());
+
+        // Parameter validation
         $params = self::validate_parameters(self::sync_group_members_parameters(), array(
             'courseidnumber' => $courseidnumber,
             'groupidnumber' => $groupidnumber,
@@ -113,7 +117,7 @@ class local_obu_assessment_groups_external extends external_api {
 
         // Parameter validation
         $params = self::validate_parameters(
-            self::add_session_parameters(), array(
+            self::create_group_parameters(), array(
                 'courseidnumber' => $courseidnumber,
                 'groupidnumber' => $groupidnumber,
                 'groupname' => $groupname,
@@ -157,7 +161,7 @@ class local_obu_assessment_groups_external extends external_api {
 
         // Parameter validation
         $params = self::validate_parameters(
-            self::add_session_parameters(), array(
+            self::delete_group_parameters(), array(
                 'courseidnumber' => $courseidnumber,
                 'groupidnumber' => $groupidnumber,
             )
