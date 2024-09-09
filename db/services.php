@@ -52,7 +52,7 @@ $functions = array(
 
 // Define the services to install as pre-build services.
 $services = array(
-	'Attendance web service' => array(
+	'OBU Assessment Group Web Service' => array(
 		'shortname' => 'obu_assessment_group',
 		'functions' => array(
 			'local_obu_assessment_groups_sync_group_members',
