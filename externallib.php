@@ -36,7 +36,7 @@ class local_obu_assessment_groups_external extends external_api {
                 'members' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'userid' => new external_value(PARAM_TEXT, 'username'),
+                            'userid' => new external_value(PARAM_INT, 'user id'),
                         )
                     )
                 )
@@ -47,7 +47,10 @@ class local_obu_assessment_groups_external extends external_api {
     public static function sync_group_members_returns() {
         return new external_function_parameters(
             array(
-                'result' => new external_value(PARAM_INT, 'Response code'),
+                'result' => new external_value(PARAM_INT, 'Result of the sync group members. 2 = success with issues, 1 = success, 0 = failure, -1 = course not found, -2 = group not found'),
+                'issuemembers' => new external_multiple_structure(
+                    'userid' => new external_value(PARAM_INT, 'user id'),
+                )
             )
         );
     }
@@ -56,7 +59,6 @@ class local_obu_assessment_groups_external extends external_api {
     {
         global $CFG, $DB;
 
-        require_once("$CFG->dirroot/grouplib.php");
         require_once("$CFG->dirroot/grouplib.php");
 
         $params = self::validate_parameters(self::sync_group_members_parameters(), array(
@@ -135,7 +137,7 @@ class local_obu_assessment_groups_external extends external_api {
     public static function delete_group_returns() {
         return new external_single_structure(
             array(
-                'result' => new external_value(PARAM_INT, 'Result of the group creation. 1 = success, 0 = failure, -1 = course not found, -2 = group not found, -3 = group not in course'),
+                'result' => new external_value(PARAM_INT, 'Result of the group creation. 1 = success, 0 = failure, -1 = course not found, -2 = group not found'),
             )
         );
     }
@@ -159,15 +161,13 @@ class local_obu_assessment_groups_external extends external_api {
             return array('result' => -1);
         }
 
-        // Check if the group with the provided groupidnumber exists
-        if (!($group = $DB->get_record('groups', array('idnumber' => $params['groupidnumber'])))) {
+        // Check if the group with the provided groupidnumber exists within course
+        if (!($group = $DB->get_record('groups', array(
+            'idnumber' => $params['groupidnumber'],
+            'courseid' => $course->id,
+            )))) {
             return array('result' => -2);
         }
-
-        // Check if the group exists in the given course
-        if (!($DB->record_exists('groups', array('id' => $group->id, 'courseid' => $course->id)))) {
-            return array('result' => -3);
-        };
 
         if (local_obu_assessment_groups_delete_group($group)) {
             return array('result' => 1);

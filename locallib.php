@@ -28,47 +28,59 @@ function local_obu_assessment_groups_sync_group_members($group, $members) {
     require_once("$CFG->dirroot/grouplib.php");
 
     $current_members = groups_get_members($group->id);
-
-    $current_member_usernames = array_map(function($user) {
-        return $user->username;
+    $current_member_userids = array_map(function($user) {
+        return $user->id;
     }, $current_members);
 
-    $members_to_add = array_diff($members, $current_member_usernames);
-    foreach($members_to_add as $username) {
-        local_obu_assessment_groups_sync_group_member_add($group, $username);
+    $member_userids = array_map(function($user) {
+        return $user->userid;
+    }, $members);
+
+    $issue_members = new array();
+    $members_to_add = array_diff($member_userids, $current_member_userids);
+    foreach($members_to_add as $userid) {
+        if(!local_obu_assessment_groups_sync_group_member_add($group, $userid)) {
+            array_push($issue_members, $userid);
+        }
     }
 
-    $members_to_delete = array_diff($current_member_usernames, $members);
-    foreach($members_to_delete as $username) {
-        local_obu_assessment_groups_sync_group_member_delete($group, $username);
+    $members_to_delete = array_diff($current_member_userids, $member_userids);
+    foreach($members_to_delete as $userid) {
+        local_obu_assessment_groups_sync_group_member_delete($group, $userid);
     }
 
     return array(
-        'Result' => 1
+        'result' => 1,
+        'issuemembers' => $issue_members
     );
 }
 
-function local_obu_assessment_groups_sync_group_member_add($group, $username) {
+private function local_obu_assessment_groups_sync_group_member_add($group, $userid) {
     global $CFG, $DB;
 
     require_once("$CFG->dirroot/grouplib.php");
     require_once("$CFG->dirroot/local/obu_assessment_extensions/lib.php");
 
-    $user = $DB->get_record('user', array('username'=>$username), '*', MUST_EXIST);
+    try {
+        $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
 
-    groups_add_member($group, $user);
+        groups_add_member($group, $user);
 
-    local_obu_assess_ex_recalculate_due_dates_for_user($user, $group);
+        local_obu_assess_ex_recalculate_due_dates_for_user($user, $group);
+    }
+    catch (Exception $e) {
+        return false;
+    }
+
+    return true;
 }
 
-function local_obu_assessment_groups_sync_group_member_delete($group, $username) {
-    global $CFG, $DB;
+private function local_obu_assessment_groups_sync_group_member_delete($group, $userid) {
+    global $CFG;
 
     require_once("$CFG->dirroot/grouplib.php");
 
-    $user = $DB->get_record('user', array('username'=>$username), 'id', MUST_EXIST);
-
-    groups_remove_member($group, $user);
+    groups_remove_member($group, $userid);
 }
 
 function local_obu_assessment_groups_create_group($course, $groupidnumber, $groupname) {
