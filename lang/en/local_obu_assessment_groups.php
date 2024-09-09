@@ -16,20 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    obu_assessment_groups
+ * @package    local_obu_assessment_groups
  * @author     Emir Kamel
  * @copyright  2024, Oxford Brookes University {@link http://www.brookes.ac.uk/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024072501;
-$plugin->requires = 2012120301;
-$plugin->component = 'local_obu_assessment_groups';
-$plugin->maturity = MATURITY_STABLE;
+$string['privacy:metadata'] = 'The OBU Assessment Groups plugin does not store any personal data.';
 
-$plugin->release = 'v0.0.1';
-$plugin->dependencies = array(
-    'local_obu_assessment_extensions' => 2024071701,
-    'local_obu_group_manager' => 2024060401
-);
+$string['pluginname'] = 'obu_assessment_groups';
+$string['plugintitle'] = 'OBU Assessment Groups';
