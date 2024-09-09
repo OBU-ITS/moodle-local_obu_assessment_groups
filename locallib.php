@@ -60,6 +60,8 @@ function local_obu_assessment_groups_sync_group_members($group, $members) {
 
 function local_obu_assessment_groups_sync_group_member_add($group, $userid) {
 
+    global $DB;
+
     try {
         $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
 
